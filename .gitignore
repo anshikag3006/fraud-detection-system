@@ -1,0 +1,11 @@
+**.gitignore content:**
+```
+*.csv
+*.db
+*.pyc
+__pycache__/
+.DS_Store
+*.png
+*.jpg
+venv/
+.env
