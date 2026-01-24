@@ -275,6 +275,26 @@ class FraudDetectionSystem:
         print(f"Precision: {precision_score(self.df['Class'], anomaly_predictions):.4f}")
         print(f"Recall: {recall_score(self.df['Class'], anomaly_predictions):.4f}")
 
+    def plot_precision_recall_curve(self, y_pred_proba):
+        """Plot Precision-Recall curve for imbalanced data"""
+        from sklearn.metrics import precision_recall_curve, average_precision_score
+        
+        precision, recall, _ = precision_recall_curve(self.y_test, y_pred_proba)
+        avg_precision = average_precision_score(self.y_test, y_pred_proba)
+        
+        plt.figure(figsize=(8, 6))
+        plt.plot(recall, precision, color='blue', lw=2, 
+                label=f'Precision-Recall curve (AP = {avg_precision:.2f})')
+        plt.xlabel('Recall')
+        plt.ylabel('Precision')
+        plt.title('Precision-Recall Curve - Important for Imbalanced Data', 
+                fontsize=14, fontweight='bold')
+        plt.legend(loc="lower left")
+        plt.grid(True, alpha=0.3)
+        plt.savefig('precision_recall_curve.png', dpi=300, bbox_inches='tight')
+        print(f"\nAverage Precision Score: {avg_precision:.4f}")
+        plt.close()
+
 
 def main():
     """Main execution function"""
@@ -298,7 +318,10 @@ def main():
     fraud_system.train_model()
     
     # Step 5: Evaluate model
-    fraud_system.evaluate_model()
+    y_pred, y_pred_proba = fraud_system.evaluate_model()
+
+    # NEW: Add precision-recall curve
+    fraud_system.plot_precision_recall_curve(y_pred_proba)
     
     # Step 6: Feature importance
     fraud_system.feature_importance_analysis()
