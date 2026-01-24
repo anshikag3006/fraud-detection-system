@@ -210,21 +210,6 @@ Through this project, I developed expertise in:
 - [ ] A/B testing framework for model comparison
 - [ ] Automated retraining pipeline
 
-## 📝 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## 📧 Contact
-
-**[Your Name]**
-- Email: your.email@example.com
-- LinkedIn: [Your LinkedIn](https://linkedin.com/in/yourprofile)
-- GitHub: [@yourusername](https://github.com/yourusername)
-
 ## 🙏 Acknowledgments
 
 - Dataset provided by [Machine Learning Group - ULB](https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud)
