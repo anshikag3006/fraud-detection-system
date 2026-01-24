@@ -115,7 +115,15 @@ class FraudDetectionSystem:
         plt.show()
         
     def preprocess_data(self):
-        """Prepare data for modeling"""
+        """
+        Prepare data for modeling
+        
+        Key decisions made:
+        1. Stratified split ensures both train/test have same fraud ratio (0.17%)
+        2. StandardScaler normalizes features - important for distance-based algorithms
+        (though less critical for Random Forest, good practice for future models)
+        3. 80-20 split provides enough training data while preserving test set size
+        """ 
         print("\n" + "="*50)
         print("DATA PREPROCESSING")
         print("="*50)
