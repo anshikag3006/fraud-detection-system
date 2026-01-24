@@ -283,6 +283,54 @@ class FraudDetectionSystem:
         print(f"Precision: {precision_score(self.df['Class'], anomaly_predictions):.4f}")
         print(f"Recall: {recall_score(self.df['Class'], anomaly_predictions):.4f}")
 
+    def compare_models(self):
+        """Compare Random Forest with other algorithms"""
+        from sklearn.linear_model import LogisticRegression
+        from sklearn.tree import DecisionTreeClassifier
+        from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+        
+        print("\n" + "="*50)
+        print("MODEL COMPARISON")
+        print("="*50)
+        
+        models = {
+            'Random Forest': RandomForestClassifier(n_estimators=100, random_state=42, 
+                                                    class_weight='balanced', n_jobs=-1),
+            'Logistic Regression': LogisticRegression(random_state=42, 
+                                                       class_weight='balanced', max_iter=1000),
+            'Decision Tree': DecisionTreeClassifier(random_state=42, 
+                                                    class_weight='balanced', max_depth=10)
+        }
+        
+        results = []
+        
+        for name, model in models.items():
+            print(f"\nTraining {name}...")
+            model.fit(self.X_train, self.y_train)
+            y_pred = model.predict(self.X_test)
+            y_pred_proba = model.predict_proba(self.X_test)[:, 1]
+            
+            results.append({
+                'Model': name,
+                'Accuracy': round(accuracy_score(self.y_test, y_pred), 4),
+                'Precision': round(precision_score(self.y_test, y_pred), 4),
+                'Recall': round(recall_score(self.y_test, y_pred), 4),
+                'F1-Score': round(f1_score(self.y_test, y_pred), 4),
+                'ROC-AUC': round(roc_auc_score(self.y_test, y_pred_proba), 4)
+            })
+        
+        results_df = pd.DataFrame(results)
+        print("\n" + "="*50)
+        print("COMPARISON RESULTS")
+        print("="*50)
+        print(results_df.to_string(index=False))
+        
+        # Save to file
+        results_df.to_csv('model_comparison.csv', index=False)
+        print("\nResults saved to 'model_comparison.csv'")
+        
+        return results_df
+
     def plot_precision_recall_curve(self, y_pred_proba):
         """Plot Precision-Recall curve for imbalanced data"""
         from sklearn.metrics import precision_recall_curve, average_precision_score
@@ -328,13 +376,16 @@ def main():
     # Step 5: Evaluate model
     y_pred, y_pred_proba = fraud_system.evaluate_model()
 
-    # NEW: Add precision-recall curve
+    # Step 6: Precision-Recall Curve
     fraud_system.plot_precision_recall_curve(y_pred_proba)
     
-    # Step 6: Feature importance
+    # Step 7: Compare with other models (ADD THIS) ↓↓↓
+    fraud_system.compare_models()
+    
+    # Step 8: Feature importance
     fraud_system.feature_importance_analysis()
     
-    # Step 7: Anomaly detection
+    # Step 9: Anomaly detection
     fraud_system.anomaly_detection()
     
     print("\n" + "="*50)
@@ -343,7 +394,9 @@ def main():
     print("\nGenerated files:")
     print("1. eda_visualizations.png")
     print("2. model_evaluation.png")
-    print("3. feature_importance.png")
+    print("3. precision_recall_curve.png")
+    print("4. model_comparison.csv")
+    print("5. feature_importance.png")
 
 
 if __name__ == "__main__":
