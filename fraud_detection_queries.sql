@@ -272,3 +272,34 @@ SELECT
 FROM transactions
 ORDER BY RANDOM()
 LIMIT 10000;  -- Sample for visualization
+
+-- =====================================================
+-- 10. MY CUSTOM ANALYSIS - Fraud Detection Efficiency
+-- =====================================================
+
+-- Calculate detection efficiency: What % of fraud amount we catch
+WITH fraud_stats AS (
+    SELECT 
+        SUM(amount) as total_fraud_amount,
+        COUNT(*) as total_fraud_cases
+    FROM transactions
+    WHERE is_fraud = 1
+),
+detection_windows AS (
+    SELECT 
+        (time_seconds / 3600) as hour,
+        SUM(CASE WHEN is_fraud = 1 THEN amount ELSE 0 END) as fraud_amount_detected,
+        COUNT(CASE WHEN is_fraud = 1 THEN 1 END) as fraud_cases_detected
+    FROM transactions
+    GROUP BY hour
+)
+SELECT 
+    d.hour,
+    d.fraud_cases_detected,
+    ROUND(d.fraud_amount_detected, 2) as amount_at_risk,
+    ROUND(d.fraud_amount_detected * 100.0 / f.total_fraud_amount, 2) as pct_of_total_fraud
+FROM detection_windows d
+CROSS JOIN fraud_stats f
+WHERE d.fraud_cases_detected > 0
+ORDER BY d.fraud_amount_detected DESC
+LIMIT 10;
