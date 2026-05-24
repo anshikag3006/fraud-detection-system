@@ -1,6 +1,6 @@
 """
 Financial Fraud Detection System
-Author: [Your Name]
+Author: Anshika Gupta
 Description: Analyzing transaction patterns and detecting fraudulent activities
 using machine learning and statistical methods
 """
