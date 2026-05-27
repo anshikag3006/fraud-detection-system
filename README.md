@@ -1,221 +1,144 @@
-# 💳 Financial Fraud Detection System
+# 🔍 Fraud Detection System
 
-A comprehensive machine learning system for detecting fraudulent credit card transactions using advanced analytics, statistical modeling, and anomaly detection techniques.
+A machine learning project to detect fraudulent credit card transactions using Random Forest classification on 284,807 real transactions.
 
-## 🎯 Project Overview
+---
 
-This project analyzes credit card transaction data to identify patterns of fraudulent activity. Using a combination of supervised learning (Random Forest) and unsupervised learning (Isolation Forest), the system achieves high accuracy in fraud detection while maintaining low false-positive rates.
+## 📌 About the Project
 
-**Key Highlights:**
-- ✅ Analyzed 284,807 transactions with 99.83% accuracy
-- ✅ ROC-AUC Score: 0.98+
-- ✅ Comprehensive SQL analysis for business insights
-- ✅ Interactive visualizations and dashboards
-- ✅ Production-ready code with modular architecture
+Credit card fraud is a major problem where customers get charged for purchases they never made. This project builds a system that automatically identifies fraudulent transactions using machine learning and SQL analytics.
 
-## 📊 Dataset
+The biggest challenge was the severe class imbalance — only 492 out of 284,807 transactions were fraud (0.17%). A naive model could get 99.83% accuracy by predicting everything as legitimate, while catching zero fraud. So I focused on **Recall** and **ROC-AUC** as my key metrics instead of accuracy.
 
-**Source:** [Kaggle Credit Card Fraud Detection](https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud)
+---
 
-The dataset contains transactions made by European cardholders in September 2013. It presents transactions that occurred over two days, with 492 frauds out of 284,807 transactions (0.172% fraud rate).
+## 📊 Results
 
-**Features:**
-- **Time:** Seconds elapsed between each transaction and the first transaction
-- **V1-V28:** Principal components obtained with PCA (anonymized features)
-- **Amount:** Transaction amount
-- **Class:** Target variable (1 = fraud, 0 = legitimate)
+| Metric | Value |
+|--------|-------|
+| ROC-AUC Score | **0.9766** |
+| Frauds Caught (True Positive) | **81/98 (83%)** |
+| Legitimate Correctly Identified | **56,846** |
+| False Alarms (False Positive) | **18** |
+| Missed Frauds (False Negative) | **17** |
 
-## 🚀 Getting Started
+---
 
-### Prerequisites
+## 🔑 Key Findings
 
-- Python 3.8+
-- pip package manager
-- SQLite3 (usually pre-installed with Python)
+- **V14, V10, V12** were the top 3 most important features for fraud detection
+- **Amount and Time were NOT in top 10 features** — fraud cannot be detected by transaction amount alone
+- **Fraud peaks at 2-4am** when customers are less likely to notice suspicious activity
+- **Transactions below ₹10** show high fraud rates — typical card testing behavior where fraudsters verify stolen cards with tiny amounts first
+- **Transactions above ₹500** show the highest fraud rate (0.37%) — fraudsters quickly escalate to large purchases after verifying the card works
+- Top 3 features (V14, V10, V12) alone account for **over 40% of all model decisions**
 
-### Installation
+---
 
-1. **Clone the repository**
-```bash
-git clone https://github.com/yourusername/fraud-detection-system.git
-cd fraud-detection-system
-```
+## 🛠️ Tech Stack
 
-2. **Install dependencies**
-```bash
-pip install -r requirements.txt
-```
+| Category | Tools |
+|----------|-------|
+| Language | Python |
+| ML Model | Scikit-learn (RandomForestClassifier) |
+| Data Processing | Pandas, NumPy |
+| Preprocessing | StandardScaler, train_test_split |
+| Visualization | Matplotlib, Seaborn |
+| Database | SQLite3 |
+| Model Saving | Joblib |
+| Metrics | ROC-AUC, Confusion Matrix, Classification Report |
 
-3. **Download the dataset**
-- Go to [Kaggle Dataset](https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud)
-- Download `creditcard.csv`
-- Place it in the project root directory
-
-### Usage
-
-#### 1. Run Complete Analysis
-```bash
-python fraud_detection_analysis.py
-```
-
-This will:
-- Load and explore the data
-- Perform statistical analysis
-- Train machine learning models
-- Generate visualizations
-- Export results
-
-#### 2. SQL Analysis
-```bash
-python load_data_to_sql.py
-```
-
-This will:
-- Create SQLite database
-- Load data into SQL tables
-- Run analytical queries
-- Generate business insights
-
-#### 3. Custom Queries
-```bash
-sqlite3 fraud_detection.db < fraud_detection_queries.sql
-```
+---
 
 ## 📁 Project Structure
 
 ```
 fraud-detection-system/
-│
-├── fraud_detection_analysis.py   # Main ML analysis script
-├── load_data_to_sql.py           # SQL database creation
-├── fraud_detection_queries.sql   # SQL analysis queries
-├── requirements.txt              # Python dependencies
-├── README.md                     # This file
-│
-├── creditcard.csv               # Dataset (download separately)
-├── fraud_detection.db           # SQLite database (generated)
-│
-└── outputs/                     # Generated visualizations
-    ├── eda_visualizations.png
-    ├── model_evaluation.png
-    └── feature_importance.png
+├── notebooks/
+│   ├── 01_data_exploration.ipynb    # EDA, visualizations, preprocessing
+│   ├── 02_model_training.ipynb      # Model training and evaluation
+│   └── 03_sql_analysis.ipynb        # SQL fraud pattern analysis
+├── reports/
+│   ├── class_distribution.png       # Class imbalance visualization
+│   ├── amount_distribution.png      # Fraud vs legitimate amounts
+│   ├── time_distribution.png        # Transactions over time
+│   ├── confusion_matrix.png         # Model evaluation
+│   ├── roc_curve.png                # ROC curve (AUC = 0.9766)
+│   └── feature_importance.png       # Top 10 features
+├── model/
+│   ├── fraud_detection_model.pkl    # Saved trained model
+│   └── scaler.pkl                   # Saved StandardScaler
+├── .gitignore
+├── requirements.txt
+└── README.md
 ```
-
-## 🔍 Key Features
-
-### 1. Exploratory Data Analysis (EDA)
-- Transaction distribution analysis
-- Amount and time-based patterns
-- Class imbalance handling
-- Correlation analysis
-
-### 2. Machine Learning Models
-
-**Random Forest Classifier**
-- Handles imbalanced data with class weighting
-- Feature importance ranking
-- Hyperparameter optimization
-- Cross-validation
-
-**Isolation Forest (Anomaly Detection)**
-- Unsupervised fraud detection
-- Identifies outliers in transaction patterns
-- Complementary approach to supervised learning
-
-### 3. SQL Analytics
-- Transaction aggregation and grouping
-- Time-series analysis
-- Pattern detection queries
-- Business intelligence insights
-
-### 4. Visualizations
-- Distribution plots
-- Confusion matrices
-- ROC curves
-- Feature importance charts
-- Time-series trends
-
-## 📈 Results
-
-### Model Performance
-
-| Metric | Score |
-|--------|-------|
-| Accuracy | 99.93% |
-| Precision (Fraud) | 88.5% |
-| Recall (Fraud) | 81.6% |
-| F1-Score (Fraud) | 84.9% |
-| ROC-AUC | 0.98 |
-
-### Key Insights
-
-1. **Fraud Patterns:**
-   - Fraudulent transactions tend to have lower amounts than legitimate ones
-   - Fraud detection rate varies by time of day
-   - Certain feature combinations (V14, V10, V12) are strong fraud indicators
-
-2. **Business Impact:**
-   - Total fraud amount: $X
-   - Average fraud transaction: $Y
-   - Peak fraud hours: Z
-
-## 🛠️ Technologies Used
-
-- **Python 3.8+**: Core programming language
-- **Pandas & NumPy**: Data manipulation and analysis
-- **Scikit-learn**: Machine learning models
-- **Matplotlib & Seaborn**: Data visualization
-- **SQLite**: Database management
-- **SQL**: Query language for analytics
-
-## 📚 Methodology
-
-1. **Data Preprocessing**
-   - Handle missing values
-   - Feature scaling with StandardScaler
-   - Train-test split (80-20) with stratification
-
-2. **Model Training**
-   - Random Forest with 100 estimators
-   - Class weight balancing for imbalanced data
-   - Grid search for hyperparameter tuning
-
-3. **Evaluation**
-   - Multiple metrics (accuracy, precision, recall, F1)
-   - ROC-AUC analysis
-   - Confusion matrix interpretation
-   - Cross-validation
-
-4. **Deployment Considerations**
-   - Real-time prediction capability
-   - Threshold optimization
-   - False positive rate management
-
-## 🎓 Learning Outcomes
-
-Through this project, I developed expertise in:
-- Handling highly imbalanced datasets
-- Feature engineering and selection
-- Model evaluation and optimization
-- SQL-based business analytics
-- Production-ready code organization
-- Data visualization best practices
-
-## 🔮 Future Enhancements
-
-- [ ] Deploy as REST API using Flask/FastAPI
-- [ ] Real-time fraud detection dashboard
-- [ ] Deep learning models (LSTM, Autoencoder)
-- [ ] Integration with payment processing systems
-- [ ] A/B testing framework for model comparison
-- [ ] Automated retraining pipeline
-
-## 🙏 Acknowledgments
-
-- Dataset provided by [Machine Learning Group - ULB](https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud)
-- Inspired by real-world financial fraud detection challenges
-- Built for learning and demonstration purposes
 
 ---
 
-⭐ If you found this project helpful, please consider giving it a star!
+## 🚀 How to Run
+
+**1. Clone the repository:**
+```bash
+git clone https://github.com/anshikag3006/fraud-detection-system.git
+cd fraud-detection-system
+```
+
+**2. Install required libraries:**
+```bash
+pip install pandas numpy matplotlib seaborn scikit-learn joblib
+```
+
+**3. Download the dataset:**
+- Download `creditcard.csv` from [Kaggle Credit Card Fraud Detection](https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud)
+- Place it in the root project folder (not committed due to file size)
+
+**4. Run notebooks in order:**
+```
+01_data_exploration.ipynb   → EDA and preprocessing
+02_model_training.ipynb     → Train and evaluate model
+03_sql_analysis.ipynb       → SQL pattern analysis
+```
+
+---
+
+## 📂 Dataset
+
+| Property | Value |
+|----------|-------|
+| Source | [Kaggle Credit Card Fraud Detection](https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud) |
+| Total Transactions | 284,807 |
+| Fraud Cases | 492 (0.17%) |
+| Legitimate Cases | 284,315 (99.83%) |
+| Time Period | 2 days (September 2013) |
+| Features | 30 (Time, Amount, V1-V28 via PCA transformation) |
+
+> ⚠️ Note: V1-V28 are PCA transformed features due to confidentiality. Original feature names are not available.
+
+---
+
+## 🧠 Why Random Forest?
+
+- Handles class imbalance well with `class_weight='balanced'`
+- Works well on large datasets (284K+ transactions)
+- Provides feature importance scores
+- Resistant to overfitting compared to single decision trees
+- 100 trees voting together gives more reliable predictions than any single model
+
+---
+
+## 📈 Model Performance Explained
+
+Since the dataset is severely imbalanced (0.17% fraud), I used:
+
+- **Recall** as primary metric — catching real frauds is more important than avoiding false alarms. Missing a fraud = real money stolen from customer.
+- **ROC-AUC** as overall performance metric — measures how well the model separates fraud from legitimate across all thresholds. Score of 0.9766 means excellent separation ability.
+- **NOT accuracy** — a model predicting everything as legitimate would get 99.83% accuracy while catching zero fraud.
+
+---
+
+## 👩‍💻 Author
+
+**Anshika Gupta**
+- 📧 anshikag3006@gmail.com
+- 🔗 GitHub: [@anshikag3006](https://github.com/anshikag3006)
+- 💼 LinkedIn: [linkedin.com/in/anshikag3006](https://linkedin.com/in/anshikag3006)
